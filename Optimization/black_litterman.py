@@ -1,4 +1,5 @@
 ## Black-litterman Model
+import numpy as np
 from numpy.linalg import inv
 from mvo import *
 def black_litterman (mu,Q,card):
