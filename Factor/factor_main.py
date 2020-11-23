@@ -1,6 +1,7 @@
-
+from database_main import Database
 import json 
 import csv 
+#from google.colab import files
 import numpy as np
 import requests
 import csv
@@ -13,7 +14,6 @@ import pymongo
 import argparse
 import dns
 
-from Database.database_main import Database
 factors = Database.read_data('factors')
 
 print(factors)
@@ -30,193 +30,198 @@ regimes = [0] * len(market_factor)
 for i in range(len(regimes)):
   if i>=lookback:   #say lookback = 5
     temp = market_factor[i-lookback:i]
-    #print(temp)
+    print(temp)
     if all(elem >= -10 for elem in temp):   #Pass bull market condition
       regimes[i] = 1 #Switch to Bull Market
-    
-    
+
+      import numpy as np
+      from itertools import accumulate
+      class RegimeSwitching(object):
+        class HMM:
+            def __init__(self, n_state, n_obs, S=None, A=None, B=None):
+                self.n_state = n_state  # number of state
+                self.n_obs = n_obs  # number of observation
+                self.S = S  # 1*n, the initial distribution
+                self.A = A  # n*n, the transition matrix
+                self.B = B  # n*m, Emission matrix
       
-import numpy as np
-from itertools import accumulate
-class RegimeSwitching(object):
-  class HMM:
-      def __init__(self, n_state, n_obs, S=None, A=None, B=None):
-          self.n_state = n_state  # number of state
-          self.n_obs = n_obs  # number of observation
-          self.S = S  # 1*n, the initial distribution
-          self.A = A  # n*n, the transition matrix
-          self.B = B  # n*m, Emission matrix
+      
+        def _alpha(hmm, obs, t):
+            # calculate alpha at time t
+            b = hmm.B[:, obs[0]]
+            alpha = np.array([hmm.S * b])  # n*1
+            for i in range(1, t + 1):
+                alpha = (alpha @ hmm.A ) * np.array([hmm.B[:, obs[i]]])
+            return alpha[0]
+      
+      
+        def fancyGamma(hmm, obs, t):
+            # calculate alpha at time t
+            b = hmm.B[:, obs[0]]
+            fancyGamma = np.array([hmm.S * b])  # n*1
+            for i in range(1, t + 1):
+                fancyGamma = (fancyGamma @ hmm.A) * np.array([hmm.B[:, obs[i]]])
+            return fancyGamma[0]
+      
+        def forward_prob1(hmm, obs):
+            # sum of all the states
+            alpha = _alpha(hmm, obs, len(obs) - 1)
+            return np.sum(alpha,axis = 1)
+      
+        def forward_prob(hmm, obs):
+            # sum of all the states
+            alpha = _alpha(hmm, obs, len(obs) - 1)
+            return np.sum(alpha)
+      
+      
+        def _beta(hmm, obs, t):
+            # calculate beta at time t
+            beta = np.ones(hmm.n_state)
+            for i in reversed(range(t + 1, len(obs))):
+                beta = np.sum(hmm.A * hmm.B[:, obs[i]] * beta, axis=1)
+            return beta
+      
+      
+        def backward_prob(hmm, obs):
+            # sum up
+            beta = _beta(hmm, obs, 0)
+            return np.sum(hmm.S * hmm.B[:, obs[0]] * beta)
+      
+      
+        def fb_prob(hmm, obs, t=None):
+            # put together forward and backwards
+            if t is None:
+                t = 0
+            res = _alpha(hmm, obs, t) * _beta(hmm, obs, t)
+            return res.sum()
+      
+      
+        def _gamma(hmm, obs, t):
+            # calculate the probability of each state at time t
+            alpha = _alpha(hmm, obs, t)
+            beta = _beta(hmm, obs, t)
+            prob = alpha * beta
+            return prob / prob.sum()
+      
+      
+        def point_prob(hmm, obs, t, i):
+            # calculate the probability at state i, at time t. 
+            prob = _gamma(hmm, obs, t)
+            return prob[i]
+      
+      
+        def _xi(hmm, obs, t):
+            alpha = np.mat(_alpha(hmm, obs, t))
+            beta_p = _beta(hmm, obs, t + 1)
+            obs_prob = hmm.B[:, obs[t + 1]]
+            obs_beta = np.mat(obs_prob * beta_p)
+            alpha_obs_beta = np.asarray(alpha.T * obs_beta)
+            xi = alpha_obs_beta * hmm.A
+            return xi / xi.sum()
+      
+      
+        def fit(hmm, obs_data, maxstep=500):
+            # Baum-Welch
+            hmm.A = np.ones((hmm.n_state, hmm.n_state)) / hmm.n_state
+            hmm.B = np.ones((hmm.n_state, hmm.n_obs)) / hmm.n_obs
+            hmm.S = np.random.sample(hmm.n_state)  #Random initialization
+            hmm.S = hmm.S / hmm.S.sum()
+            step = 0
+            while step < maxstep:
+                xi = np.zeros_like(hmm.A)
+                gamma = np.zeros_like(hmm.S)
+                B = np.zeros_like(hmm.B)
+                S = _gamma(hmm, obs_data, 0)
+                for t in range(len(obs_data) - 1):
+                    tmp_gamma = _gamma(hmm, obs_data, t)
+                    gamma += tmp_gamma
+                    xi += _xi(hmm, obs_data, t)
+                    B[:, obs_data[t]] += tmp_gamma
+      
+                # update A
+                for i in range(hmm.n_state):
+                    hmm.A[i] = xi[i] / gamma[i]
+                # update B
+                tmp_gamma_end = _gamma(hmm, obs_data, len(obs_data) - 1)
+                gamma += tmp_gamma_end
+                B[:, obs_data[-1]] += tmp_gamma_end
+                for i in range(hmm.n_state):
+                    hmm.B[i] = B[i] / gamma[i]
+                # update S
+                hmm.S = S
+                step += 1
+            return hmm
+      
+      
+        def predict(hmm, obs):
+            # Viterbi
+            N = len(obs)
+            nodes_graph = np.zeros((hmm.n_state, N), dtype=int)  
+            delta = hmm.S * hmm.B[:, obs[0]]  
+            nodes_graph[:, 0] = range(hmm.n_state)
+      
+            for t in range(1, N):
+                new_delta = []
+                for i in range(hmm.n_state):
+                    temp = [hmm.A[j, i] * d for j, d in enumerate(delta)]  # Current state = i, and go back one state
+                    max_d = max(temp) #Find optimal last step's emission
+                    new_delta.append(max_d * hmm.B[i, obs[t]]) #Emit at that last time
+                    nodes_graph[i, t] = temp.index(max_d) #Take the argmax. 
+                delta = new_delta
+      
+            current_state = np.argmax(nodes_graph[:, -1])
+            path = []
+            t = N
+            while t > 0:
+                path.append(current_state)
+                current_state = nodes_graph[current_state, t - 1]
+                t -= 1
+            return list(reversed(path))
+        def read_factor(start_date):
+          factors = Database.read_data('factors')
+          newfactor = factors[factors["date"] >= start_date]   #date in format '2005-09-30'
+          newfactor = newfactor.sort_values(by=['date'])
+          return newfactor
+        
+        def get_marketfactor(newfactor):
+          factors_return = newfactor.values.tolist()
+          #print(factors_return[:5])
+      
+          market_factor = []
+          for cols in factors_return:
+            market_factor.append(cols[1])
+          return market_factor
+      
+        def hmm_fit(sequence):
+          from hmmlearn import hmm
+          remodel = hmm.GaussianHMM(n_components=2, covariance_type="full", n_iter=100)
+          remodel.fit(sequence)
+          Z2 = remodel.predict(sequence)
+          return Z2
+      
+        def thresholding_regime(latent_states, lookback):
+          regimes = [1] * len(latent_states)
+          for i in range(len(regimes)):
+            if i>=lookback:   #say lookback = 10
+              temp = list(latent_states)[i-lookback:i]
+              if all(elem == 0 for elem in temp):   #Pass bull market condition
+                regimes[i] = 0 #Switch to another regime
+              if all(elem == 1 for elem in temp):   #Pass bull market condition
+                regimes[i] = 1 #Switch to another regime
+          return regimes
+      
+        def combine(newfactor,regimes):
+          newfactor['Regime'] = regimes
+          return newfactor
+              
 
-
-  def _alpha(hmm, obs, t):
-      # calculate alpha at time t
-      b = hmm.B[:, obs[0]]
-      alpha = np.array([hmm.S * b])  # n*1
-      for i in range(1, t + 1):
-          alpha = (alpha @ hmm.A ) * np.array([hmm.B[:, obs[i]]])
-      return alpha[0]
-
-
-  def fancyGamma(hmm, obs, t):
-      # calculate alpha at time t
-      b = hmm.B[:, obs[0]]
-      fancyGamma = np.array([hmm.S * b])  # n*1
-      for i in range(1, t + 1):
-          fancyGamma = (fancyGamma @ hmm.A) * np.array([hmm.B[:, obs[i]]])
-      return fancyGamma[0]
-
-  def forward_prob1(hmm, obs):
-      # sum of all the states
-      alpha = _alpha(hmm, obs, len(obs) - 1)
-      return np.sum(alpha,axis = 1)
-
-  def forward_prob(hmm, obs):
-      # sum of all the states
-      alpha = _alpha(hmm, obs, len(obs) - 1)
-      return np.sum(alpha)
-
-
-  def _beta(hmm, obs, t):
-      # calculate beta at time t
-      beta = np.ones(hmm.n_state)
-      for i in reversed(range(t + 1, len(obs))):
-          beta = np.sum(hmm.A * hmm.B[:, obs[i]] * beta, axis=1)
-      return beta
-
-
-  def backward_prob(hmm, obs):
-      # sum up
-      beta = _beta(hmm, obs, 0)
-      return np.sum(hmm.S * hmm.B[:, obs[0]] * beta)
-
-
-  def fb_prob(hmm, obs, t=None):
-      # put together forward and backwards
-      if t is None:
-          t = 0
-      res = _alpha(hmm, obs, t) * _beta(hmm, obs, t)
-      return res.sum()
-
-
-  def _gamma(hmm, obs, t):
-      # calculate the probability of each state at time t
-      alpha = _alpha(hmm, obs, t)
-      beta = _beta(hmm, obs, t)
-      prob = alpha * beta
-      return prob / prob.sum()
-
-
-  def point_prob(hmm, obs, t, i):
-      # calculate the probability at state i, at time t. 
-      prob = _gamma(hmm, obs, t)
-      return prob[i]
-
-
-  def _xi(hmm, obs, t):
-      alpha = np.mat(_alpha(hmm, obs, t))
-      beta_p = _beta(hmm, obs, t + 1)
-      obs_prob = hmm.B[:, obs[t + 1]]
-      obs_beta = np.mat(obs_prob * beta_p)
-      alpha_obs_beta = np.asarray(alpha.T * obs_beta)
-      xi = alpha_obs_beta * hmm.A
-      return xi / xi.sum()
-
-
-  def fit(hmm, obs_data, maxstep=500):
-      # Baum-Welch
-      hmm.A = np.ones((hmm.n_state, hmm.n_state)) / hmm.n_state
-      hmm.B = np.ones((hmm.n_state, hmm.n_obs)) / hmm.n_obs
-      hmm.S = np.random.sample(hmm.n_state)  #Random initialization
-      hmm.S = hmm.S / hmm.S.sum()
-      step = 0
-      while step < maxstep:
-          xi = np.zeros_like(hmm.A)
-          gamma = np.zeros_like(hmm.S)
-          B = np.zeros_like(hmm.B)
-          S = _gamma(hmm, obs_data, 0)
-          for t in range(len(obs_data) - 1):
-              tmp_gamma = _gamma(hmm, obs_data, t)
-              gamma += tmp_gamma
-              xi += _xi(hmm, obs_data, t)
-              B[:, obs_data[t]] += tmp_gamma
-
-          # update A
-          for i in range(hmm.n_state):
-              hmm.A[i] = xi[i] / gamma[i]
-          # update B
-          tmp_gamma_end = _gamma(hmm, obs_data, len(obs_data) - 1)
-          gamma += tmp_gamma_end
-          B[:, obs_data[-1]] += tmp_gamma_end
-          for i in range(hmm.n_state):
-              hmm.B[i] = B[i] / gamma[i]
-          # update S
-          hmm.S = S
-          step += 1
-      return hmm
-
-
-  def predict(hmm, obs):
-      # Viterbi
-      N = len(obs)
-      nodes_graph = np.zeros((hmm.n_state, N), dtype=int)  
-      delta = hmm.S * hmm.B[:, obs[0]]  
-      nodes_graph[:, 0] = range(hmm.n_state)
-
-      for t in range(1, N):
-          new_delta = []
-          for i in range(hmm.n_state):
-              temp = [hmm.A[j, i] * d for j, d in enumerate(delta)]  # Current state = i, and go back one state
-              max_d = max(temp) #Find optimal last step's emission
-              new_delta.append(max_d * hmm.B[i, obs[t]]) #Emit at that last time
-              nodes_graph[i, t] = temp.index(max_d) #Take the argmax. 
-          delta = new_delta
-
-      current_state = np.argmax(nodes_graph[:, -1])
-      path = []
-      t = N
-      while t > 0:
-          path.append(current_state)
-          current_state = nodes_graph[current_state, t - 1]
-          t -= 1
-      return list(reversed(path))
-  def read_factor():
-    factors = Database.read_data('factors')
-    return factors
-  
-  def filter_factor(factors):
-    newfactor = factors[factors["date"] >= '2005-09-30']
-    newfactor = newfactor.sort_values(by=['date'])
-    return newfactor
-  
-  def get_marketfactor(newfactor):
-    factors_return = newfactor.values.tolist()
-    print(factors_return[:5])
-
-    market_factor = []
-    for cols in factors_return:
-      market_factor.append(cols[1])
-    return market_factor
-  def thresholding_regime(market_factor, lookback):
-    regimes = [0] * len(market_factor)
-    for i in range(len(regimes)):
-      if i>=lookback:   #say lookback = 5
-        temp = market_factor[i-lookback:i]
-        if all(elem >= -0.2 for elem in temp):   #Pass bull market condition
-          regimes[i] = 1 #Switch to Bull Market
-    return regimes
-
-  def combine(newfactor,regimes):
-    newfactor['Regime'] = regimes
-    return newfactor
-
-    
-    
-          
-factors = RegimeSwitching.read_factor()
-newfactor = RegimeSwitching.filter_factor(factors)
-market_factor = RegimeSwitching.get_marketfactor(newfactor)
-regimes = RegimeSwitching.thresholding_regime(market_factor, 5)
-result = RegimeSwitching.combine(newfactor,regimes)
+factors = RegimeSwitching.read_factor(start_date = '2005-09-30')
+#print(factors)
+market_factor = RegimeSwitching.get_marketfactor(factors)
+latent_states = RegimeSwitching.hmm_fit(np.array(market_factor).reshape(-1,1))
+#print(list(latent_states)
+regimes = RegimeSwitching.thresholding_regime(latent_states, 10)
+result = RegimeSwitching.combine(factors,regimes)
 
 zer = 0
 one = 0
@@ -227,6 +232,8 @@ for num in regimes:
     one += 1
 print(zer)
 print(one)
+
+print(result)
 
 import numpy as np 
 from numpy.linalg import inv
@@ -305,8 +312,7 @@ class matrix_helper(object):
         except:
           import pdb; pdb.set_trace()
     return trans
-
-
+  
 import copy
 from scipy.stats.mstats import gmean
 import numpy as np
@@ -339,7 +345,7 @@ class factors_fit(object):
       datanp = df.values.astype(np.float32)
       ret = df.pct_change(axis = 1)
       ret = ret.drop(['2005-09-30'],axis =1)  #Change if date change
-      return df, ret.values.tolist()
+      return ret.values.tolist()
   
     def factors_and_returns(asset_return,factors_return):
       factors_return = factors_return[0:len(factors_return):5]       #can change if factors match exactly
@@ -350,10 +356,12 @@ class factors_fit(object):
           asset_return[i] = asset_return[i][:len(factors_return)]
         else:
           factors_return = factors_return[:len(asset_return[i])]
+      regimes = []
       for row in factors_return:
+        regimes.append(int(row[6]))
         del row[6]
         #del row[5]
-      return asset_return,factors_return
+      return [asset_return,factors_return,regimes]
   
     def get_excess_return(asset_return_matrix,factor_returns):
       for i in range(len(asset_return_matrix)):
@@ -418,16 +426,29 @@ class factors_fit(object):
       return expected_factor_return
 
 data = factors_fit.read_asset('SP500Price')
-factors = RegimeSwitching.read_factor()
-newfactor = RegimeSwitching.filter_factor(factors)
-market_factor = RegimeSwitching.get_marketfactor(newfactor)
-regimes = RegimeSwitching.thresholding_regime(market_factor, 5)
-factors = RegimeSwitching.combine(newfactor,regimes)
-df, return_matrix = factors_fit.asset_return(data)
-asset_return,factors_return = factors_fit.factors_and_returns(return_matrix,factors)
+factors = RegimeSwitching.read_factor('2005-09-30')
+market_factor = RegimeSwitching.get_marketfactor(factors)
+latent_state = RegimeSwitching.hmm_fit(np.array(market_factor).reshape(-1,1))
+regimes = RegimeSwitching.thresholding_regime(latent_state, 5)
+factors = RegimeSwitching.combine(factors,regimes)
+return_matrix = factors_fit.asset_return(data)
+[asset_return,factors_return,corresponding_regime] = factors_fit.factors_and_returns(return_matrix,factors)
 excess_return = factors_fit.get_excess_return(asset_return,factors_return)
+
+print(corresponding_regime)
 
 mu, Q = factors_fit.generate_factor(factors_return,excess_return)
 
 print(np.shape(Q))
 print(np.shape(mu))
+
+
+zer = 0
+one = 0
+for num in regimes:
+  if num == 0:
+    zer += 1
+  else:
+    one += 1
+print(zer)
+print(one)
