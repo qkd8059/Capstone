@@ -345,7 +345,7 @@ class factors_fit(object):
       datanp = df.values.astype(np.float32)
       ret = df.pct_change(axis = 1)
       ret = ret.drop(['2005-09-30'],axis =1)  #Change if date change
-      return ret.values.tolist()
+      return df, ret.values.tolist()
   
     def factors_and_returns(asset_return,factors_return):
       factors_return = factors_return[0:len(factors_return):5]       #can change if factors match exactly
@@ -431,16 +431,16 @@ market_factor = RegimeSwitching.get_marketfactor(factors)
 latent_state = RegimeSwitching.hmm_fit(np.array(market_factor).reshape(-1,1))
 regimes = RegimeSwitching.thresholding_regime(latent_state, 5)
 factors = RegimeSwitching.combine(factors,regimes)
-return_matrix = factors_fit.asset_return(data)
+df, return_matrix = factors_fit.asset_return(data)
 [asset_return,factors_return,corresponding_regime] = factors_fit.factors_and_returns(return_matrix,factors)
 excess_return = factors_fit.get_excess_return(asset_return,factors_return)
 
-print(corresponding_regime)
+#print(corresponding_regime)
 
 mu, Q = factors_fit.generate_factor(factors_return,excess_return)
 
-print(np.shape(Q))
-print(np.shape(mu))
+#print(np.shape(Q))
+#print(np.shape(mu))
 
 
 zer = 0
@@ -450,5 +450,5 @@ for num in regimes:
     zer += 1
   else:
     one += 1
-print(zer)
-print(one)
+#print(zer)
+#print(one)
