@@ -17,11 +17,11 @@ def robust_cvar_cost(mu,Q, card, price_table, date, old_weight, old_ticker):
     """
     # Define parameters used for Monte Carlo simulation
     ## the number of simulated asset price paths
-    num_paths = 5
+    num_paths = 1000
     ## get current prices of the current date
     current_prices = price_table[date]
     ## the time length of simulation in the unit of estimation of mu and Q. Here T represents rebalancing every 8 weeks
-    T = 8
+    T = 4
     ## the number of time steps to take in the simulation
     N = 1
     ## confident level for the VaR
