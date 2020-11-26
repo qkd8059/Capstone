@@ -76,7 +76,7 @@ def cvar_cost(mu,Q, card, price_table, date, old_weight, old_ticker, target_retu
     cost_pos = np.hstack((np.identity(num_assets),np.zeros((num_assets,num_paths+1)),-np.identity(num_assets)))
     cost_neg = np.hstack((-np.identity(num_assets),np.zeros((num_assets,num_paths+1)),-np.identity(num_assets)))
     cost_total = np.hstack((np.zeros(num_assets+num_paths+1),np.ones(num_assets)*cost))
-    G = np.hstack((-rs_mu,, z, gamma,cost0))
+    G = np.hstack((-rs_mu, z, gamma,cost0))
     G = np.vstack((G,cost_pos,cost_neg,cost_total))
     h = np.hstack((- np.ones(num_paths) * target_return,w_old,-w_old,total_cost))
     up = 0.5
