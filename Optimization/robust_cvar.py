@@ -4,7 +4,7 @@ from matrix_helper import *
 
 
 # CVaR optimization
-def robust_cvar(mu,Q, card, price_table, date):
+def robust_cvar(mu,Q, card, price_table, date, target_return):
     """
     :param mu: n*1 vector, expected returns of n assets
     :param Q: n*n matrix, covariance matrix of n assets
@@ -59,12 +59,15 @@ def robust_cvar(mu,Q, card, price_table, date):
     f3 = 1
     f = np.hstack((f1,f2,f3))
 
-    # Create inequality constraint matrix: z_s >= 0, z_s >= -r_s^T*x - gamma, 0 <= x_i <= 0.5
+    # Create inequality constraint matrix: z_s >= 0, z_s >= -r_s^T*x - gamma, mu^T*x >= target_return, 0 <= x_i <= 0.5
     rs = returns_sample.T
+    ones = np.ones((num_paths,1))
+    mu_mat = ones*mu
+    rs_mu = rs+mu_mat
     z = -np.identity(num_paths)
     gamma = -np.ones(num_paths).reshape(num_paths,1)
-    G = np.hstack((-rs, z, gamma))
-    h = np.zeros(num_paths)
+    G = np.hstack((-rs_mu, z, gamma))
+    h = - np.ones(num_paths) * target_return
     up = 0.5
     bds = [None] * (num_assets + num_paths + 1)
     for i in range (num_assets + num_paths + 1):
