@@ -19,9 +19,9 @@ def cvar(mu, Q, card, price_table, date, target_return, lookback):
     ## get current prices of the current date
     current_prices = price_table[date]
     ## the time length of simulation in the unit of estimation of mu and Q. Here T represents rebalancing every 8 weeks
-    T = lookback
+    T = 1
     ## the number of time steps to take in the simulation
-    N = 1
+    N = lookback
     ## confident level for the VaR
     alpha = 0.95
 
