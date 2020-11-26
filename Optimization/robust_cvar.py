@@ -4,7 +4,7 @@ from matrix_helper import *
 
 
 # CVaR optimization
-def robust_cvar(mu,Q, card, price_table, date, target_return):
+def robust_cvar(mu,Q, card, price_table, date, target_return, lookback):
     """
     :param mu: n*1 vector, expected returns of n assets
     :param Q: n*n matrix, covariance matrix of n assets
@@ -19,7 +19,7 @@ def robust_cvar(mu,Q, card, price_table, date, target_return):
     ## get current prices of the current date
     current_prices = price_table[date]
     ## the time length of simulation in the unit of estimation of mu and Q. Here T represents rebalancing every 8 weeks
-    T = 4
+    T = lookback
     ## the number of time steps to take in the simulation
     N = 1
     ## confident level for the VaR
