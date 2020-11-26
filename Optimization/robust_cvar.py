@@ -15,7 +15,7 @@ def robust_cvar(mu,Q, card, price_table, date, target_return):
     """
     # Define parameters used for Monte Carlo simulation
     ## the number of simulated asset price paths
-    num_paths = 1000
+    num_paths = 100
     ## get current prices of the current date
     current_prices = price_table[date]
     ## the time length of simulation in the unit of estimation of mu and Q. Here T represents rebalancing every 8 weeks
