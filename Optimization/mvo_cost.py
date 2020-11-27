@@ -19,7 +19,7 @@ def mvo_cost(mu, Q, card, old_weight, old_ticker):
     w_old = np.zeros(len(mu))
     w_old[old_ticker] = old_weight
 
-    # Create objective function
+    # Create objective function: Minimize w^T*Q*w - gamma*mu^T*w
     p = Q
     p = p.T @ p
     lamb = 0.001
