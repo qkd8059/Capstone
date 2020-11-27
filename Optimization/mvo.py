@@ -9,7 +9,7 @@ def mvo(mu, Q, card):
     :param card: a scalar, cardinality constraint
     :return: norm_weight (the portfolio weight), ticker_index (the indices of selected stock)
     """
-    # Create objective function
+    # Create objective function: Minimize w^T*Q*w - gamma*mu^T*w
     p = np.array(Q)
     lamb = 0.001
     q = np.array(-lamb * mu)
