@@ -4,7 +4,7 @@ from matrix_helper import *
 
 
 # CVaR optimization
-def cvar(mu, Q, card, price_table, date, target_return, lookback):
+def cvar(mu, Q, card, price_table, date, target_return, lookback,risk_appetite):
     """
     :param mu: n*1 vector, expected returns of n assets
     :param Q: n*n matrix, covariance matrix of n assets
@@ -23,7 +23,7 @@ def cvar(mu, Q, card, price_table, date, target_return, lookback):
     ## the number of time steps to take in the simulation
     N = lookback
     ## confident level for the VaR
-    alpha = 0.95
+    alpha = 0.95 + 0.04*risk_appetite
 
     # Monte Carlo simulation to obtain sample return of each path for each asset
     num_assets = len(mu)

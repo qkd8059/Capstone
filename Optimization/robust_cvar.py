@@ -4,7 +4,7 @@ from matrix_helper import *
 
 
 # CVaR optimization
-def robust_cvar(mu,Q, card, price_table, date, target_return, lookback):
+def robust_cvar(mu,Q, card, price_table, date, target_return, lookback,risk_appetite):
     """
     :param mu: n*1 vector, expected returns of n assets
     :param Q: n*n matrix, covariance matrix of n assets
@@ -23,7 +23,7 @@ def robust_cvar(mu,Q, card, price_table, date, target_return, lookback):
     ## the number of time steps to take in the simulation
     N = lookback
     ## confident level for the VaR
-    alpha = 0.95
+    alpha = 0.95+0.04*risk_appetite
 
     # Monte Carlo simulation to obtain sample return of each path for each asset
     num_assets = len(mu)
@@ -49,7 +49,7 @@ def robust_cvar(mu,Q, card, price_table, date, target_return, lookback):
     theta = np.diag(np.diag(Q/num_paths))
     sqrt_theta = np.sqrt(theta)
     # set a 90% confidence interval for the true mu
-    ep = 1.645
+    ep = 1.645 + 0.5*risk_appetite
     delta = ep*np.diag(sqrt_theta)
 
     # Create objective function: min gamma+1/[(1-alpha)S]*sum z_s - lambda*mu^T*x + lambda*delta*x

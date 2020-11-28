@@ -25,7 +25,7 @@ def robust_cvar_cost(mu,Q, card, price_table, date, old_weight, old_ticker, targ
     ## the number of time steps to take in the simulation
     N = lookback
     ## confident level for the VaR
-    alpha = 0.95
+    alpha = 0.95+0.04*risk_appetite
 
     # Create the weight array of the previous time period
     w_old = np.zeros(len(mu))
@@ -59,7 +59,7 @@ def robust_cvar_cost(mu,Q, card, price_table, date, old_weight, old_ticker, targ
     theta = np.diag(np.diag(Q/num_paths))
     sqrt_theta = np.sqrt(theta)
     # set a 90% confidence interval for the true mu
-    ep = 1.645
+    ep = 1.645+0.5*risk_appetite
     delta = ep*np.diag(sqrt_theta)
 
     # Create objective function: min gamma+1/[(1-alpha)S]*sum z_s - lambda*mu^T*x + lambda*delta*x

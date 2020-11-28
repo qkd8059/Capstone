@@ -4,7 +4,7 @@ from matrix_helper import *
 
 
 # CVaR with Transaction Cost
-def cvar_cost(mu,Q, card, price_table, date, old_weight, old_ticker, target_return, lookback):
+def cvar_cost(mu,Q, card, price_table, date, old_weight, old_ticker, target_return, lookback,risk_appetite):
     """
     :param mu: n*1 vector, expected returns of n assets
     :param Q: n*n matrix, covariance matrix of n assets
@@ -25,7 +25,7 @@ def cvar_cost(mu,Q, card, price_table, date, old_weight, old_ticker, target_retu
     ## the number of time steps to take in the simulation
     N = lookback
     ## confident level for the VaR
-    alpha = 0.95
+    alpha = 0.95+0.04*risk_appetite
 
     # Create the weight array of the previous time period
     w_old = np.zeros(len(mu))
