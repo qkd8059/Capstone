@@ -18,8 +18,7 @@ def mvo_mip (mu, Q, card):
   prob = cp.Problem(cp.Minimize(risk - gamma * exp_ret),
                     [cp.sum(w) == 1,
                       w >= 0,
-                      cp.sum(z) <= card,
-                     w-z <= 0,
+                      cp.sum(z) == card,
                      z >= 0,
                      z <= 1])
   prob.solve()
