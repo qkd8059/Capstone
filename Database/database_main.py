@@ -10,7 +10,6 @@ import pymongo
 
 class Database(object):
     
- 
     def read_tickers(tickerType):
         ##get the tickers for all stocks in the index
         #sp = pd.read_csv(tickerfile) #(r'S&P500Tickers.csv')
@@ -33,30 +32,29 @@ class Database(object):
         
     def get_date():
         #set the time interval for getting the stock price
+        dtFromDate = '2005-09-30'
         dtToDate = '2020-09-30' #str(dt.datetime.now().date())
-        dtFromDate = '2010-09-30'
         dates = [dtFromDate, dtToDate]
         return dates
     
     
     def get_price(tickers,dates):
         #get the weekly historical price for each stock
-        headers = {'Content-Type': 'application/json'}
+        headers = {
+        'Content-Type': 'application/json'
+        }
     
         table =[];
         for i in range(0,len(tickers)):
-            requestResponse = requests.get("https://api.tiingo.com/tiingo/daily/"+tickers[i]+"/prices?startDate="+dates[0]+"&endDate="+dates[1]+"&token=6b6dca5492e46a79e40f578eb6ecafe357ddc31b&resampleFreq=weekly")
+            requestResponse = requests.get("https://api.tiingo.com/tiingo/daily/"+tickers[i]+"/prices?startDate="+dates[0]+"&endDate="+dates[1]+"&token=6b6dca5492e46a79e40f578eb6ecafe357ddc31b&resampleFreq=weekly",headers=headers)
             temp_list = requestResponse.json()
-            print(tickers[i])
             dict = {};
-            list = requestResponse.json()
             dict['Symbol'] = tickers[i]
-            for j in range(0,len(list)):
-                #print(list[j])
-                longdate = list[j]['date']
+            print(tickers[i])
+            for k in range(0,len(temp_list)):
+                longdate = temp_list[k]['date']
                 date = longdate[0:10]
-                #print(date)
-                dict[date] = list[j]['adjClose']  
+                dict[date] = temp_list[k]['adjClose']  
             table.append(dict);
         return table
     
@@ -84,56 +82,47 @@ class Database(object):
         #read data from Atlas collections
         client = pymongo.MongoClient("mongodb+srv://admin:admin@mie479.mvqsq.mongodb.net/MIE479?retryWrites=true&w=majority")
         db = client.MIE479
-        if (collection == 'factors'):
-            cursor = db.factors.find()
-        elif (collection == 'SP500Tickers'):
-            cursor = db.SP500Tickers.find()
-        elif (collection == 'SP500Price'):
-            cursor = db.SP500AdjClose.find()
-        elif (collection == 'SP1500Tickers'):
-            cursor = db.SP1500Tickers.find()
-        elif (collection == 'SP1500Price'):
-            cursor = db.SP1500AdjClose.find()  
-        elif (collection == 'ETFTickers'):
-            cursor = db.ETFTickers.find()
-        elif (collection == 'ETFPrice'):
-            cursor = db.ETFAdjClose.find()        
-        
+        cursor = db[collection].find()       
         df = pd.DataFrame(list(cursor))
         df = df.drop(['_id'],axis = 1)
         
         return df
+    
+    def save_into_mongo (data, collection):
+        client = pymongo.MongoClient("mongodb+srv://admin:admin@mie479.mvqsq.mongodb.net/MIE479?retryWrites=true&w=majority")
+        db = client.MIE479
+        collection = db[collection]
+        data.reset_index(inplace=True)
+        data_dict = data.to_dict("record")
+        collection.insert_many(data_dict)
         
-        
     
-    
-    ##main function#################################################################
-    ##S&P500 stocks
-    #pricefile = 'SP500AdjClose.csv' #the file which the adjusted closing price is written into
-    #collection = 'SP500AdjClose'  #the file in which the price is stored 
-    #tickers = read_file(1) #ticker type 1 = s&p500 tickers
-    #dates = get_date()
-    #table = get_price(tickers,dates)
-    #write_csv(table,pricefile)
-    #import_content(pricefile,collection)
-    
-    ##S&P1500 stocks
-    #pricefile = 'SP1500AdjClose.csv' #the file which the adjusted closing price is written into
-    #collection = 'SP1500AdjClose'  #the collection in which the price is stored 
-    #tickers = read_file(2) #ticker type 2 = S&P1500 tickers
-    #dates = get_date()
-    #table = get_price(tickers,dates)
-    #write_csv(table,pricefile)
-    #import_content(pricefile,collection)
-    
-    ##ETFs
-    #pricefile = 'ETFAdjClose.csv' #the file which the adjusted closing price is written into
-    #collection = 'ETFAdjClose'  #the collection in which the price is stored 
-    #tickers = read_file(3) #ticker type 1 = ETF tickers
-    #dates = get_date()
-    #table = get_price(tickers,dates)
-    #write_csv(table,pricefile)
-    #import_content(pricefile,collection)
-     
-    
-    
+##main function#################################################################
+##S&P500 stocks
+#pricefile = 'SP500AdjClose.csv' #the file which the adjusted closing price is written into
+#collection = 'SP500AdjClose'  #the file in which the price is stored 
+#tickers = read_tickers(1) #ticker type 1 = s&p500 tickers
+#dates = get_date()
+#table = get_price(tickers,dates)
+#write_csv(table,pricefile)
+#import_content(pricefile,collection)
+
+##S&P1500 stocks
+#pricefile = 'SP1500AdjClose.csv' #the file which the adjusted closing price is written into
+#collection = 'SP1500AdjClose'  #the collection in which the price is stored 
+#tickers = read_tickers(2) #ticker type 2 = S&P1500 tickers
+#dates = get_date()
+#table = get_price(tickers,dates)
+#write_csv(table,pricefile)
+#import_content(pricefile,collection)
+
+##ETFs
+#pricefile = 'ETFAdjClose.csv' #the file which the adjusted closing price is written into
+#collection = 'ETFAdjClose'  #the collection in which the price is stored 
+#tickers = read_tickers(3) #ticker type 1 = ETF tickers
+#dates = get_date()
+#table = get_price(tickers,dates)
+#write_csv(table,pricefile)
+#import_content(pricefile,collection)
+ 
+
