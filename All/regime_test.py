@@ -1,3 +1,16 @@
+from database_main import Database
+from factor_main import *
+from mvo import *
+from mvo_cost import *
+from cvar import *
+from cvar_cost import *
+from robust_cvar import *
+from robust_cvar_cost import *
+from max_sharpe import *
+from max_sharpe_cost import *
+from risk_parity import *
+from risk_parity_cost import *
+
 class Regime_test (object):
 # card = 10
 # regime_flag = 0
@@ -11,18 +24,7 @@ class Regime_test (object):
 # cost_flag = 1
 # date = ['2010-10-15']
 # price_table = df
-  from database_main import Database
-  from factor_main import *
-  from mvo import *
-  from mvo_cost import *
-  from cvar import *
-  from cvar_cost import *
-  from robust_cvar import *
-  from robust_cvar_cost import *
-  from max_sharpe import *
-  from max_sharpe_cost import *
-  from risk_parity import *
-  from risk_parity_cost import *
+
   def cardinality (principal):
     if principal <= 10000:
       card = 5
