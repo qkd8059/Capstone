@@ -230,10 +230,10 @@ for num in regimes:
     zer += 1
   else:
     one += 1
-print(zer)
-print(one)
+# print(zer)
+# print(one)
 
-print(result)
+# print(result)
 
 import numpy as np 
 from numpy.linalg import inv
@@ -425,19 +425,19 @@ class factors_fit(object):
         expected_factor_return.append(gmean(factor_returns_added_1[i]) - 1)
       return expected_factor_return
 
-data = factors_fit.read_asset('SP500Price')
-factors = RegimeSwitching.read_factor('2005-09-30')
-market_factor = RegimeSwitching.get_marketfactor(factors)
-latent_state = RegimeSwitching.hmm_fit(np.array(market_factor).reshape(-1,1))
-regimes = RegimeSwitching.thresholding_regime(latent_state, 5)
-factors = RegimeSwitching.combine(factors,regimes)
-df, return_matrix = factors_fit.asset_return(data)
-[asset_return,factors_return,corresponding_regime] = factors_fit.factors_and_returns(return_matrix,factors)
-excess_return = factors_fit.get_excess_return(asset_return,factors_return)
+# data = factors_fit.read_asset('SP500AdjClose')
+# factors = RegimeSwitching.read_factor('2005-09-30')
+# market_factor = RegimeSwitching.get_marketfactor(factors)
+# latent_state = RegimeSwitching.hmm_fit(np.array(market_factor).reshape(-1,1))
+# regimes = RegimeSwitching.thresholding_regime(latent_state, 5)
+# factors = RegimeSwitching.combine(factors,regimes)
+# df, return_matrix = factors_fit.asset_return(data)
+# [asset_return,factors_return,corresponding_regime] = factors_fit.factors_and_returns(return_matrix,factors)
+# excess_return = factors_fit.get_excess_return(asset_return,factors_return)
 
 #print(corresponding_regime)
 
-mu, Q = factors_fit.generate_factor(factors_return,excess_return)
+# mu, Q = factors_fit.generate_factor(factors_return,excess_return)
 
 #print(np.shape(Q))
 #print(np.shape(mu))
