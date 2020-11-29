@@ -11,6 +11,8 @@ class Regime_test (object):
 # cost_flag = 1
 # date = ['2010-10-15']
 # price_table = df
+from database_main import Database
+from factor_main import *
   def cardinality (principal):
     if principal <= 10000:
       card = 5
