@@ -95,7 +95,7 @@ class Regime_test (object):
       ticker_index.append(temp[1])
     return mu_all, weight, ticker_index
   
-  def get_port_info (mu,Q,weight,ticker,date_list):
+  def get_port_info (mu,Q,weight,ticker,date_list,df):
     #all_weight = []
     #all_ticker = []
     all_exp_return = []
@@ -153,7 +153,7 @@ class Regime_test (object):
     excess_return, factors_return, regimes, price_table = Regime_test.get_returns(10)
     mu_all, w, t = Regime_test.multiperiod (factors_return[:], excess_return[:], df=price_table, lookback = lookback, principle = principle,target_return = target_return,regimes = regimes,risk_appetite = risk_appetite,cardinality = card)
     #print(mu_all[1][t[1]])
-    dates, all_exp_return, all_actual_return, all_port_exp_ret, all_port_act_ret = Regime_test.get_port_info (mu=mu_all,Q=None,weight=w,ticker=t,date_list=date_list)
+    dates, all_exp_return, all_actual_return, all_port_exp_ret, all_port_act_ret = Regime_test.get_port_info (mu=mu_all,Q=None,weight=w,ticker=t,date_list=date_list,df=price_table)
     # mu_all[0][ticker[1]]
     # print(all_port_act_ret)
     cum_ret_exp = Regime_test.cum_return(all_port_exp_ret)
