@@ -149,7 +149,7 @@ class Regime_test (object):
     return dates, all_weight, all_ticker, cum_ret_exp,cum_ret_act
   
   def get_returns(Time_horizon):
-    data = factors_fit.read_asset('SP500Price')
+    data = factors_fit.read_asset('SP500AdjClose')
     factors = RegimeSwitching.read_factor(start_date = '2005-09-30')
     market_factor = RegimeSwitching.get_marketfactor(factors)
     latent_state = RegimeSwitching.hmm_fit(np.array(market_factor).reshape(-1,1))
