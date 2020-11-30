@@ -4,7 +4,7 @@ from matrix_helper import *
 
 
 # Robust CVaR with Transaction Cost
-def robust_cvar_cost(mu,Q, card, price_table, date, old_weight, old_ticker, target_return, lookback):
+def robust_cvar_cost(mu,Q, card, price_table, date, old_weight, old_ticker, target_return, lookback, risk_appetite):
     """
     :param mu: n*1 vector, expected returns of n assets
     :param Q: n*n matrix, covariance matrix of n assets
