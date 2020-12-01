@@ -122,19 +122,42 @@ class Regime_test (object):
       all_port_exp_ret.append(port_exp_return)
       all_port_act_ret.append(port_actual_return)
     return dates, all_exp_return, all_actual_return, all_port_exp_ret, all_port_act_ret
+  def plot_month (df,lookback,risk_appetite,card):
+    #all_weight = []
+    #all_ticker = []
+    #all_exp_return = []
+    date_list = np.arange(0,horizon,lookback)
+    
+    excess_return, factors_return, regimes, price_table = Regime_test.get_returns(horizon)
+    mu_all, w, t = Regime_test.multiperiod (factors_return[:], excess_return[:], df=price_table, lookback = lookback, principal = principal,target_return = target_return,regimes = regimes,risk_appetite = risk_appetite,cardinality = card)
 
+    all_actual_return = []
+    #all_port_exp_ret = []
+    all_port_act_ret = []
+    dates = []
+    date_list = np.arange(0,750,4)
+    for i in range(len(date_list)-2):
+      cur_date = df.columns.values[date_list[i]]
+      #print(cur_date)
+      dates.append(cur_date)
+      # exp_return = mu[ticker[i]]
+      #exp_return = mu[i][ticker[i]]
+      if i == 0:
+        actual_return = 1
+      else:
+        actual_return = df.iloc[ticker[int(np.floor(i/(lookback/4)))],date_list[i+2]].values/df.iloc[ticker[int(np.floor(i/(lookback/4)))],date_list[i+1]].values
+        #actual_return = df.iloc[ticker[int(np.floor(i/(lookback/4)))-count1],date_list[i+2]].values/df.iloc[ticker[int(np.floor(i/(lookback/4)))-count1],date_list[i+1]].values
+      #port_exp_return = lookback*sum(weight[i]*exp_return)
+      port_actual_return = sum(weight[int(np.floor(i/(lookback/4)))]*actual_return)-1
+      #port_actual_return = sum(weight[int(np.floor(i/(lookback/4)))-count2]*actual_return)-1
+      #all_weight.append(weight[i])
+      #all_ticker.append(ticker[i])
+      #all_exp_return.append(exp_return)
+      #all_actual_return.append(actual_return)
+      #all_port_exp_ret.append(port_exp_return)
+      all_port_act_ret.append(port_actual_return)
+    return dates, all_port_act_ret, cumulated_act_ret = Regime_test.cum_return(all_port_act_ret)
   ### Calculate expected and actual cumulative return
-  def cum_return (port_ret):
-    cal_ret_list = []
-    cum_ret_list = []
-    cum_ret_list.append(1)
-    for i in range(len(port_ret)):
-      cal_ret_list.append(port_ret[i]+1)
-    ret = 1
-    for num in cal_ret_list:
-      ret = ret*num
-      cum_ret_list.append(ret)
-    return cum_ret_list
 
   # calculate the mean difference between actual and expected return
   def mean_diff (act_ret,exp_ret):
