@@ -1,3 +1,4 @@
+import numpy as np
 from regime_test import *
 from testplot import *
 lookback = 8
