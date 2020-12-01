@@ -27,10 +27,10 @@ class Regime_test (object):
 
   def cardinality (principal):
     if principal <= 10000:
-      card = 5
+      card = 10
     elif principal > 10000 and principal <= 100000:
-      card = 5
-    else: card = 12
+      card = 15
+    else: card = 20
     return card
   def choose_model (regime_flag):
     if regime_flag == 0:
@@ -55,12 +55,12 @@ class Regime_test (object):
         weight, ticker_index = opt_model[model_flag][cost_flag](mu,Q, card, old_weight, old_ticker)
     return weight, ticker_index
 
-  def multiperiod (factors_return, excess_return, df, lookback, principle,target_return,regimes,risk_appetite,cardinality):
+  def multiperiod (factors_return, excess_return, df, lookback, principal,target_return,regimes,risk_appetite,cardinality):
     weight = []
     ticker_index = []
     mu_all = []
     if cardinality == 0:
-      card = Regime_test.cardinality(principle)
+      card = Regime_test.cardinality(principal)
     else:
       card = cardinality
     
@@ -105,7 +105,7 @@ class Regime_test (object):
     dates = []
     for i in range(len(date_list)-2):
       cur_date = df.columns.values[date_list[i]]
-      print(cur_date)
+      # print(cur_date)
       dates.append(cur_date)
       # exp_return = mu[ticker[i]]
       exp_return = mu[i][ticker[i]]
@@ -141,26 +141,28 @@ class Regime_test (object):
     diff_list = np.asarray(act_ret) - np.asarray(exp_ret)
     return diff_list.mean()
 
-  def sharpe_ratio (act_ret,exp_ret,rf):
-    act_std = np.std(act_ret)
-    exp_std = np.std(exp_ret)
-    act_sr = (np.subtract(act_ret,rf))/act_std
-    exp_sr = (np.subtract(exp_ret,rf))/exp_std
-    return act_sr, exp_sr
+  def stats (act_ret,exp_ret,horizon):
+    act_std = np.std(act_ret)**(1/(horizon/52))
+    exp_std = np.std(exp_ret)**(1/(horizon/52))
+    act_annual = (np.mean(act_ret)-1)**(1/(horizon/52))
+    exp_annual = (np.mean(exp_ret)-1)**(1/(horizon/52))
+    act_sr = act_annual/act_std
+    exp_sr = exp_annual/exp_std
+    return act_annual, act_std, act_sr
 
-  def get_cum_ret(lookback,target_return,principle,risk_appetite,card,horizon):
+  def get_cum_ret(lookback,target_return,principal,risk_appetite,card,horizon):
     date_list = np.arange(0,horizon,lookback)
     cost_flag = 0
-    excess_return, factors_return, regimes, price_table = Regime_test.get_returns(10)
-    mu_all, w, t = Regime_test.multiperiod (factors_return[-horizon:], excess_return[-horizon:], df=price_table, lookback = lookback, principle = principle,target_return = target_return,regimes = regimes,risk_appetite = risk_appetite,cardinality = card)
+    excess_return, factors_return, regimes, price_table = Regime_test.get_returns(horizon)
+    mu_all, w, t = Regime_test.multiperiod (factors_return[:], excess_return[:], df=price_table, lookback = lookback, principal = principal,target_return = target_return,regimes = regimes,risk_appetite = risk_appetite,cardinality = card)
     dates, all_exp_return, all_actual_return, all_port_exp_ret, all_port_act_ret = Regime_test.get_port_info (mu=mu_all,Q=None,weight=w,ticker=t,date_list=date_list,df=price_table)
     cum_ret_exp = Regime_test.cum_return(all_port_exp_ret)
     cum_ret_act = Regime_test.cum_return(all_port_act_ret)
     all_weight = w
     all_ticker = t
-    return dates, all_weight, all_ticker, cum_ret_exp,cum_ret_act
+    return dates, price_table, all_weight, all_ticker, cum_ret_exp,cum_ret_act
   
-  def get_returns(Time_horizon):
+  def get_returns(horizon):
     data = factors_fit.read_asset('SP500AdjClose')
     factors = RegimeSwitching.read_factor(start_date = '2005-09-30')
     market_factor = RegimeSwitching.get_marketfactor(factors)
