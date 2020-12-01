@@ -94,9 +94,23 @@ class Database(object):
         collection.insert_many(data_dict)
     
     def write_time_series (data,lookback,card,risk_appetite):
+        #save 4*4*3 cumulated returns into database
         collection = 'timeseries_L'+str(lookback)+'_C'+str(card)+'_R'+str(risk_appetite)
         print(collection)
         Database.save_into_mongo(data,collection)
+    
+    def clean_col_save (data, collection):
+        client = pymongo.MongoClient("mongodb+srv://admin:admin@mie479.mvqsq.mongodb.net/MIE479?retryWrites=true&w=majority") 
+        db = client.MIE479
+        collection = db[collection]  
+        cursor = collection.count() 
+        if cursor==0: 
+            print("empty collection")
+        else:
+            collection.delete_many({})
+        data.reset_index(inplace=True)
+        data_dict = data.to_dict("record")
+        collection.insert_many(data_dict)        
         
         
     
