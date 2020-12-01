@@ -122,6 +122,20 @@ class Regime_test (object):
       all_port_exp_ret.append(port_exp_return)
       all_port_act_ret.append(port_actual_return)
     return dates, all_exp_return, all_actual_return, all_port_exp_ret, all_port_act_ret
+  
+    ### Calculate expected and actual cumulative return
+  def cum_return (port_ret):
+    cal_ret_list = []
+    cum_ret_list = []
+    cum_ret_list.append(1)
+    for i in range(len(port_ret)):
+      cal_ret_list.append(port_ret[i]+1)
+    ret = 1
+    for num in cal_ret_list:
+      ret = ret*num
+      cum_ret_list.append(ret)
+    return cum_ret_list
+  
   def plot_month (df,lookback,risk_appetite,card):
     #all_weight = []
     #all_ticker = []
