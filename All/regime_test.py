@@ -249,3 +249,12 @@ class Regime_test (object):
             shadow=True, startangle=90)
     ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
     plt.show()
+    
+  def stats (act_ret,horizon):
+    start_period = np.floor(horizon/4). astype(int)
+    df = pd.DataFrame(act_ret[-start_period:])
+    df_change = df.pct_change()
+    act_std = np.std(df_change)
+    act_annual = (act_ret[-1])**(1/(horizon/52))-1
+    act_sr = act_annual/act_std
+    return act_annual, act_std, act_sr
