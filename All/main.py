@@ -1,3 +1,5 @@
+from regime_test.py import *
+from testplot.py import *
 lookback = 8
 target_return = 0.1
 principal = 30000
