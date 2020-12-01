@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as plticker
 class testplot(object):  
   ### Plot weight distribution as pie chart
-  %matplotlib inline
+  #matplotlib inline
   def plot_pie(weight, ticker,df):
     labels = df.index.values[ticker]
     sizes = weight
@@ -23,7 +23,7 @@ class testplot(object):
     plt.show()
 
   ### Plot acutal and expected return
-  %matplotlib inline
+  #matplotlib inline
 
   def backtest_plot (date_list, all_port_act_ret, all_port_exp_ret):
     fig, ax = plt.subplots()
@@ -37,7 +37,7 @@ class testplot(object):
     ax.legend(['Actual Return','Expected Return'])
 
   ### Plot cumulative portfolio return
-  %matplotlib inline
+  #matplotlib inline
   def cum_plot (date_list, cum_ret_exp, cum_ret_act):
     fig, ax = plt.subplots()
     loc = plticker.MultipleLocator(base=90) # this locator puts ticks at regular intervals
