@@ -123,28 +123,16 @@ class Regime_test (object):
       all_port_act_ret.append(port_actual_return)
     return dates, all_exp_return, all_actual_return, all_port_exp_ret, all_port_act_ret
   
-    ### Calculate expected and actual cumulative return
-  def cum_return (port_ret):
-    cal_ret_list = []
-    cum_ret_list = []
-    cum_ret_list.append(1)
-    for i in range(len(port_ret)):
-      cal_ret_list.append(port_ret[i]+1)
-    ret = 1
-    for num in cal_ret_list:
-      ret = ret*num
-      cum_ret_list.append(ret)
-    return cum_ret_list
-  
-  def plot_month (df,lookback,risk_appetite,card,principal):
+  def plot_month (lookback,risk_appetite,card,principal,target_return):
     #all_weight = []
     #all_ticker = []
     #all_exp_return = []
-    horizon = 756
-    date_list = np.arange(0,horizon,lookback)
-    excess_return, factors_return, regimes, price_table = Regime_test.get_returns(horizon)
+    date_list = np.arange(0,750,lookback)
+
+    excess_return, factors_return, regimes, price_table = Regime_test.get_returns(10)
     mu_all, weight, ticker = Regime_test.multiperiod (factors_return[:], excess_return[:], df=price_table, lookback = lookback, principal = principal,target_return = target_return,regimes = regimes,risk_appetite = risk_appetite,cardinality = card)
-    df = price_table
+    df=price_table
+
     all_actual_return = []
     #all_port_exp_ret = []
     all_port_act_ret = []
@@ -172,9 +160,21 @@ class Regime_test (object):
       all_port_act_ret.append(port_actual_return)
       cumulated_act_ret = Regime_test.cum_return(all_port_act_ret)
     return dates, all_port_act_ret, cumulated_act_ret
-  ### Calculate expected and actual cumulative return
 
+  ### Calculate expected and actual cumulative return
+  def cum_return (port_ret):
+    cal_ret_list = []
+    cum_ret_list = []
+    cum_ret_list.append(1)
+    for i in range(len(port_ret)):
+      cal_ret_list.append(port_ret[i]+1)
+    ret = 1
+    for num in cal_ret_list:
+      ret = ret*num
+      cum_ret_list.append(ret)
+    return cum_ret_list  
   # calculate the mean difference between actual and expected return
+  
   def mean_diff (act_ret,exp_ret):
     diff_list = np.asarray(act_ret) - np.asarray(exp_ret)
     return diff_list.mean()
