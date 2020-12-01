@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="Tony Zhang">
     <meta name="generator" content="Jekyll v4.1.1">
-    <title>Signin</title>
+    <title>Sign In</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -42,15 +42,21 @@
       <label for="inputPassword" class="sr-only">Password</label>
       <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
       <h1 class="h6 mb-3 font-weight-normal text-right text-muted">Forgot your password?</h1>
-      <div class="custom-control custom-checkbox text-left">
-        <input type="checkbox" class="custom-control-input" id="same-address">
-        <label class="custom-control-label" for="same-address">Remember me</label>
+
+      <div class="form-group text-left">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="remember">
+          <label class="form-check-label" for="remember">
+            Remember me
+          </label>
+        </div>
       </div>
+
       <br>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      <a href="../dashboard/dashboard.html" class="btn btn-lg btn-primary btn-block" type="submit" role="button" aria-pressed="true">Sign in</a>
       <h1>
         <span class="h6 mb-4 font-weight-normal text-muted">Don't have an account?</span>
-        <span class="h6 mb-4 font-weight-normal text-primary">Sign up</span>
+        <span class="h6 mb-4 font-weight-normal text-primary"> <a href="../sign-up/sign-up.html">Sign up</a></span>
       </h1>
       <p class="mt-5 mb-3 text-muted">&copy; MIE479 2020-2021</p>
     </form>
