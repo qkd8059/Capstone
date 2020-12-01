@@ -12,9 +12,6 @@ class Database(object):
     
     def read_tickers(tickerType):
         ##get the tickers for all stocks in the index
-        #sp = pd.read_csv(tickerfile) #(r'S&P500Tickers.csv')
-        #tickers = sp.Symbol
-        #return tickers
         client = pymongo.MongoClient("mongodb+srv://admin:admin@mie479.mvqsq.mongodb.net/MIE479?retryWrites=true&w=majority")
         db = client.MIE479
         if (tickerType == 1):
@@ -66,10 +63,10 @@ class Database(object):
     
     def import_content(pricefile,collection):
         #import the csv file to MongoDB Atlas
-        mng_client = pymongo.MongoClient("mongodb+srv://admin:admin@mie479.mvqsq.mongodb.net/MIE479?retryWrites=true&w=majority")
-        mng_db = mng_client['MIE479'] # Replace mongo db name
+        client = pymongo.MongoClient("mongodb+srv://admin:admin@mie479.mvqsq.mongodb.net/MIE479?retryWrites=true&w=majority")
+        db = client['MIE479'] # Replace mongo db name
         collection_name = collection # Replace mongo db collection name
-        db_cm = mng_db[collection_name]
+        db_cm = db[collection_name]
         cdir = os.path.dirname(__file__)
         file_res = os.path.join(cdir, pricefile)
     
@@ -89,12 +86,18 @@ class Database(object):
         return df
     
     def save_into_mongo (data, collection):
-        client = pymongo.MongoClient("mongodb+srv://admin:admin@mie479.mvqsq.mongodb.net/MIE479?retryWrites=true&w=majority")
+        client = pymongo.MongoClient("mongodb+srv://admin:admin@mie479.mvqsq.mongodb.net/MIE479?retryWrites=true&w=majority") 
         db = client.MIE479
         collection = db[collection]
         data.reset_index(inplace=True)
         data_dict = data.to_dict("record")
         collection.insert_many(data_dict)
+    
+    def write_time_series (data,lookback,risk_appetite,card):
+        collection = 'timeseries_L'+str(lookback)+'_R'+str(risk_appetite)+'_C'+str(card)
+        print(collection)
+        Database.save_into_mongo(data,collection)
+        
         
     
 ##main function#################################################################
