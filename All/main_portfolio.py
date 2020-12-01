@@ -20,6 +20,8 @@ weight, ticker = Regime_test.single_period(lookback,target_return,principal,risk
 print(weight, ticker)
 Regime_test.plot_pie(weight, ticker)
 
+act_annual, act_std, act_sr = Regime_test.stats(cum_ret,700)
+print(act_annual, act_std, act_sr)
 
 df = Database.read_data("SP500Tickers")
 full_name = []
