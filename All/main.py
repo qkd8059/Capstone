@@ -23,3 +23,10 @@ plt.xlabel('$t$')
 plt.ylabel('$Cum Return$')
 plt.xticks(rotation=90)
 plt.show()
+
+
+#retrieve data from database
+from database_main import Database
+df = Database.read_data('timeseries_L12_C8_R0.5') #replace the collection name
+cum_ret = df['ret'].values.tolist()
+print(cum_ret)
