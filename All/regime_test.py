@@ -136,15 +136,15 @@ class Regime_test (object):
       cum_ret_list.append(ret)
     return cum_ret_list
   
-  def plot_month (df,lookback,risk_appetite,card):
+  def plot_month (df,lookback,risk_appetite,card,principal):
     #all_weight = []
     #all_ticker = []
     #all_exp_return = []
+    horizon = 756
     date_list = np.arange(0,horizon,lookback)
-    
     excess_return, factors_return, regimes, price_table = Regime_test.get_returns(horizon)
-    mu_all, w, t = Regime_test.multiperiod (factors_return[:], excess_return[:], df=price_table, lookback = lookback, principal = principal,target_return = target_return,regimes = regimes,risk_appetite = risk_appetite,cardinality = card)
-
+    mu_all, weight, ticker = Regime_test.multiperiod (factors_return[:], excess_return[:], df=price_table, lookback = lookback, principal = principal,target_return = target_return,regimes = regimes,risk_appetite = risk_appetite,cardinality = card)
+    df = price_table
     all_actual_return = []
     #all_port_exp_ret = []
     all_port_act_ret = []
@@ -170,7 +170,8 @@ class Regime_test (object):
       #all_actual_return.append(actual_return)
       #all_port_exp_ret.append(port_exp_return)
       all_port_act_ret.append(port_actual_return)
-    return dates, all_port_act_ret, cumulated_act_ret = Regime_test.cum_return(all_port_act_ret)
+      cumulated_act_ret = Regime_test.cum_return(all_port_act_ret)
+    return dates, all_port_act_ret, cumulated_act_ret
   ### Calculate expected and actual cumulative return
 
   # calculate the mean difference between actual and expected return
