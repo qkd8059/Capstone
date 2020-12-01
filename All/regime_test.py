@@ -10,6 +10,9 @@ from max_sharpe import *
 from max_sharpe_cost import *
 from risk_parity import *
 from risk_parity_cost import *
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 class Regime_test (object):
 # card = 10
