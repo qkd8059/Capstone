@@ -138,6 +138,8 @@ class Regime_test (object):
     all_port_act_ret = []
     dates = []
     date_list = np.arange(0,750,4)
+    print(len(ticker))
+    print(len(weight))
     for i in range(len(date_list)-2):
       cur_date = df.columns.values[date_list[i]]
       #print(cur_date)
@@ -147,10 +149,18 @@ class Regime_test (object):
       if i == 0:
         actual_return = 1
       else:
-        actual_return = df.iloc[ticker[int(np.floor(i/(lookback/4)))],date_list[i+2]].values/df.iloc[ticker[int(np.floor(i/(lookback/4)))],date_list[i+1]].values
+        print(i)
+        print(int(np.floor(i/(lookback/4))))
+        if int(np.floor(i/(lookback/4))) >= len(ticker):
+          actual_return = df.iloc[ticker[len(ticker)-1],date_list[i+2]].values/df.iloc[ticker[len(ticker)-1],date_list[i+1]].values
+        else:
+          actual_return = df.iloc[ticker[int(np.floor(i/(lookback/4)))],date_list[i+2]].values/df.iloc[ticker[int(np.floor(i/(lookback/4)))],date_list[i+1]].values
         #actual_return = df.iloc[ticker[int(np.floor(i/(lookback/4)))-count1],date_list[i+2]].values/df.iloc[ticker[int(np.floor(i/(lookback/4)))-count1],date_list[i+1]].values
       #port_exp_return = lookback*sum(weight[i]*exp_return)
-      port_actual_return = sum(weight[int(np.floor(i/(lookback/4)))]*actual_return)-1
+      if int(np.floor(i/(lookback/4))) >= len(weight):
+        port_actual_return = sum(weight[len(ticker)-1]*actual_return)-1
+      else:
+        port_actual_return = sum(weight[int(np.floor(i/(lookback/4)))]*actual_return)-1
       #port_actual_return = sum(weight[int(np.floor(i/(lookback/4)))-count2]*actual_return)-1
       #all_weight.append(weight[i])
       #all_ticker.append(ticker[i])
@@ -182,8 +192,8 @@ class Regime_test (object):
   def stats (act_ret,exp_ret,horizon):
     act_std = np.std(act_ret)**(1/(horizon/52))
     exp_std = np.std(exp_ret)**(1/(horizon/52))
-    act_annual = (np.mean(act_ret)-1)**(1/(horizon/52))
-    exp_annual = (np.mean(exp_ret)-1)**(1/(horizon/52))
+    act_annual = (act_ret[-1]/100)**(1/(horizon/52))-1
+    exp_annual = (exp_ret[-1]/100)**(1/(horizon/52))-1
     act_sr = act_annual/act_std
     exp_sr = exp_annual/exp_std
     return act_annual, act_std, act_sr
@@ -211,3 +221,28 @@ class Regime_test (object):
     [asset_return,factors_return,corresponding_regime] = factors_fit.factors_and_returns(return_matrix,factors)
     excess_return = factors_fit.get_excess_return(asset_return,factors_return)
     return excess_return, factors_return,regimes,price_table
+  
+  def single_period(lookback,target_return,principal,risk_appetite,card,horizon):
+    date_list = np.arange(0,horizon,lookback)
+    excess_return, factors_return, regimes, price_table = Regime_test.get_returns(horizon)
+    if card == 0:
+      card = Regime_test.cardinality(principal)
+    else:
+      card = card
+    old_weight = np.zeros(card)
+    old_ticker = np.arange(card)
+    regime_flag = regimes[-1]
+    model_flag, cost_flag = Regime_test.choose_model(regime_flag)
+    mu, Q = factors_fit.generate_factor(factors_return,excess_return)
+    weight, ticker = Regime_test.get_weight(mu,Q,card, price_table, price_table.columns.values[-1], old_weight, old_ticker, model_flag, cost_flag,target_return,lookback,risk_appetite)
+    ticker_label = price_table.index.values[ticker]
+    return weight, ticker_label
+  
+  def plot_pie(weight, ticker_label):
+    # labels = df.index.values[ticker]
+    sizes = weight
+    fig1, ax1 = plt.subplots()
+    ax1.pie(sizes, labels=ticker_label, autopct='%1.1f%%',
+            shadow=True, startangle=90)
+    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    plt.show()
