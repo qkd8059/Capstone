@@ -53,19 +53,19 @@
 
       <div class="row">
         <div class="col-md-12 order-md-1">
-          <form class="needs-validation" novalidate>
-        
+          <form class="needs-validation" action="/backend/sign-up" method="POST">
+
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="first-name">First name</label>
-                <input type="text" class="form-control" id="first-name" placeholder="" required>
+                <input name="first_name" type="text" class="form-control" id="first-name" placeholder="" required>
                 <div class="invalid-feedback">
                   Please enter your first name.
                 </div>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="last-name">Last name</label>
-                <input type="text" class="form-control" id="last-name" placeholder="" required>
+                <input name="last_name" type="text" class="form-control" id="last-name" placeholder="" required>
                 <div class="invalid-feedback">
                   Please enter your last name.
                 </div>
@@ -74,7 +74,7 @@
         
             <div class="mb-3">
               <label for="email">Email address</label>
-              <input type="email" class="form-control" id="email" placeholder="you@example.com" required>
+              <input name="email" type="email" class="form-control" id="email" placeholder="you@example.com" required>
               <div class="invalid-feedback">
                 Please enter a valid email address.
               </div>
@@ -83,7 +83,7 @@
             <div class="mb-3">
               <label for="password">Password</label>
               <div class="input-group">
-                <input type="password" id="password" class="form-control"
+                <input name="password" type="password" id="password" class="form-control"
                   aria-describedby="passwordHelp" placeholder="" data-toggle="password" 
                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,]).{8,20}" required>
                 <div class="input-group-append">
@@ -128,7 +128,6 @@
             </div>
 
             <br>
-            <!-- onclick="location.href = '../sign-in/sign-in.html';" -->
             <button class="btn btn-primary btn-lg btn-block" type="submit">Create account</button>
         
             <h1 class="text-center">

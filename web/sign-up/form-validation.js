@@ -14,12 +14,6 @@
           event.preventDefault()
           event.stopPropagation()
         }
-        else{
-          window.location.href = "../sign-in/sign-in.html";
-          event.preventDefault()
-          event.stopPropagation()
-        }
-
         form.classList.add('was-validated')
       }, false)
     })
