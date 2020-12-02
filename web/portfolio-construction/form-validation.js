@@ -15,9 +15,20 @@
           event.stopPropagation()
         }
         else{
-          window.location.href = "../dashboard/dashboard.html";
-          event.preventDefault()
-          event.stopPropagation()
+          var obj, dbParam, xmlhttp = "";
+          obj = { cookie: document.cookie };
+          dbParam = JSON.stringify(obj);
+          xmlhttp = new XMLHttpRequest();
+          xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              window.location.href = "../dashboard/dashboard.html";
+              event.preventDefault()
+              event.stopPropagation()
+            }
+          }
+          xmlhttp.open("POST", "backend/construction/", true);
+          xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          xmlhttp.send(dbParam);
         }
 
         form.classList.add('was-validated')

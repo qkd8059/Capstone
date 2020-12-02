@@ -15,12 +15,24 @@
           event.stopPropagation()
         }
         else {
-          event.preventDefault()
-          event.stopPropagation()
+          var obj, dbParam, xmlhttp, appetite = "";
+          obj = { cookie: document.cookie };
+          dbParam = JSON.stringify(obj);
+          xmlhttp = new XMLHttpRequest();
+          xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              appetite = JSON.parse(this.responseText);
+              alert("According to the survey, your risk appetite is " + appetite)
+              event.preventDefault()
+              event.stopPropagation()
+            }
+          }
+          xmlhttp.open("POST", "backend/risk-survey/", true);
+          xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          xmlhttp.send(dbParam);
         }
 
         form.classList.add('was-validated')
-        location.href = "../dashboard/dashboard.html"
       }, false)
     })
   }, false)

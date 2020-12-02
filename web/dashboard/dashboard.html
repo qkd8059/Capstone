@@ -36,219 +36,274 @@
   
   <body>
     <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-md-3 col-lg-1 mr-0 px-3" href="#">Investment Wizard</a>
-  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-  <ul class="navbar-nav px-3">
-    <li class="nav-item text-nowrap">
-      <a class="nav-link" href="../sign-in/sign-in.html">Sign out</a>
-    </li>
-  </ul>
-</nav>
-
-<div class="container-fluid">
-  <div class="row">
-    <nav id="sidebarMenu" class="col-md-3 col-lg-1 d-md-block bg-light sidebar collapse">
-      <div class="sidebar-sticky pt-3">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link active" href="#">
-              <span data-feather="home"></span>
-              Dashboard <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="sliders"></span>
-              Parameters
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="settings"></span>
-              Settings
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="bar-chart-2"></span>
-              Reports
-            </a>
-          </li>
-        </ul>
-
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>My Portfolios</span>
-          <a class="d-flex align-items-center text-muted" href="../portfolio-construction/portfolio_construction.html" aria-label="Construct a new portfolio">
-            <span data-feather="plus-circle"></span>
-          </a>
-        </h6>
-        <ul class="nav flex-column mb-2">
-          <li class="nav-item">
-            <a class="nav-link active" href="#">
-              <span data-feather="paperclip"></span>
-              Portfolio #1 <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="paperclip"></span>
-              Portfolio #2
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="paperclip"></span>
-              Portfolio #3
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="paperclip"></span>
-              Portfolio #4
-            </a>
-          </li>
-        </ul>
-      </div>
+      <a class="navbar-brand col-md-3 col-lg-1 mr-0 px-3" href="#">Investment Wizard</a>
+      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+      <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+          <a class="nav-link" href="../sign-in/sign-in.html">Sign out</a>
+        </li>
+      </ul>
     </nav>
 
-    <main role="main" class="col-md-5 ml-sm-auto col-lg-5 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-        <h1 class="h2">Portfolio Composition</h1>
-      </div>
-      <canvas class="my-4 w-100" id="doughnutChart" width="500" height="250"></canvas>
-    </main>
-    
-    <main role="main" class="col-md-5 ml-sm-auto col-lg-5 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-        <h1 class="h2">Asset Allocation</h1>
-      </div>
-      <div class="table-responsive">
-        <table class="table table-striped table-sm">
-          <thead>
-            <tr>
-              <th>Asset</th>
-              <th>Value</th>
-              <th>Weight</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>AAPL</td>
-              <td>875</td>
-              <td>38%</td>
-            </tr>
-            <tr>
-              <td>MSFT</td>
-              <td>469</td>
-              <td>17%</td>
-            </tr>
-            <tr>
-              <td>AMZN</td>
-              <td>107</td>
-              <td>6%</td>
-            </tr>
-            <tr>
-              <td>FB</td>
-              <td>160</td>
-              <td>8%</td>
-            </tr>
-            <tr>
-              <td>JPM</td>
-              <td>420</td>
-              <td>15%</td>
-            </tr>
-            <tr>
-              <td>BAC</td>
-              <td>87</td>
-              <td>5%</td>
-            </tr>
-            <tr>
-              <td>WMT</td>
-              <td>63</td>
-              <td>4%</td>
-            </tr>
-            <tr>
-              <td>V</td>
-              <td>150</td>
-              <td>7%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </main>
-  </div>
-</div>
+    <div class="container-fluid">
+      <div class="row">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-1 d-md-block bg-light sidebar collapse">
+          <div class="sidebar-sticky pt-3">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">
+                  <span data-feather="home"></span>
+                  Dashboard <span class="sr-only">(current)</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="sliders"></span>
+                  Parameters
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="settings"></span>
+                  Settings
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="bar-chart-2"></span>
+                  Reports
+                </a>
+              </li>
+            </ul>
 
-<div class="container-fluid">
-<div class="row">
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+              <span>My Portfolios</span>
+                <a class="d-flex align-items-center text-muted" href="../portfolio-construction/portfolio_construction.html" aria-label="Construct a new portfolio">
+                  <span data-feather="plus-circle"></span>
+                </a>
+            </h6>
+        
+            <ul class="nav flex-column mb-2" id="portfolio">
+              <li class="nav-item" value="1">
+                <a class="nav-link active" href="#">
+                  <span data-feather="paperclip"></span>
+                  Portfolio #1 <span class="sr-only">(current)</span>
+                </a>
+              </li>
+              <li class="nav-item" value="2">
+                <a class="nav-link" href="#">
+                  <span data-feather="paperclip"></span>
+                  Portfolio #2
+                </a>
+              </li>
+              <li class="nav-item" value="3">
+                <a class="nav-link" href="#">
+                  <span data-feather="paperclip"></span>
+                  Portfolio #3
+                </a>
+              </li>
+              <li class="nav-item" value="4">
+                <a class="nav-link" href="#">
+                  <span data-feather="paperclip"></span>
+                  Portfolio #4
+                </a>
+              </li>
+            </ul>
+            <script>
+              alert(document.getElementById("portfolio").value)
+            </script>
+          </div>
+        </nav>
 
-  <main role="main" class="col-md-5 ml-sm-auto col-lg-5 px-md-4">
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-      <h1 class="h2">Projected Performance</h1>
-      <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group mr-2">
-          <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-          <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-        </div>
-        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-          <span data-feather="calendar"></span>
-          Yearly View
-        </button>
+        <main role="main" class="col-md-5 ml-sm-auto col-lg-5 px-md-4">
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+            <h1 class="h2">Portfolio Composition</h1>
+          </div>
+          <canvas class="my-4 w-100" id="doughnutChart" width="500" height="250"></canvas>
+        </main>
+        
+        <main role="main" class="col-md-5 ml-sm-auto col-lg-5 px-md-4">
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+            <h1 class="h2">Asset Allocation</h1>
+          </div>
+          <div class="table-responsive" id="weights-table">
+            <!--
+            <table class="table table-striped table-sm">
+              <thead>
+                <tr>
+                  <th>Asset</th>
+                  <th>Value</th>
+                  <th>Weight</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>AAPL</td>
+                  <td>875</td>
+                  <td>38%</td>
+                </tr>
+                <tr>
+                  <td>MSFT</td>
+                  <td>469</td>
+                  <td>17%</td>
+                </tr>
+                <tr>
+                  <td>AMZN</td>
+                  <td>107</td>
+                  <td>6%</td>
+                </tr>
+                <tr>
+                  <td>FB</td>
+                  <td>160</td>
+                  <td>8%</td>
+                </tr>
+                <tr>
+                  <td>JPM</td>
+                  <td>420</td>
+                  <td>15%</td>
+                </tr>
+                <tr>
+                  <td>BAC</td>
+                  <td>87</td>
+                  <td>5%</td>
+                </tr>
+                <tr>
+                  <td>WMT</td>
+                  <td>63</td>
+                  <td>4%</td>
+                </tr>
+                <tr>
+                  <td>V</td>
+                  <td>150</td>
+                  <td>7%</td>
+                </tr>
+              </tbody>
+            </table>
+            -->
+
+          </div>
+        </main>
       </div>
     </div>
 
-    <canvas class="my-4 w-100" id="myChart" width="1000" height="500"></canvas>
-  </main>
+    <div class="container-fluid">
+      <div class="row">
+        <main role="main" class="col-md-5 ml-sm-auto col-lg-5 px-md-4">
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+            <h1 class="h2">Projected Performance</h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+              <div class="btn-group mr-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                <span data-feather="calendar"></span>
+                Yearly View
+              </button>
+            </div>
+          </div>
 
-<main role="main" class="col-md-5 ml-sm-auto col-lg-5 px-md-4">
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-    <h1 class="h2">Statistical Measurement</h1>
-  </div>
-  <div class="table-responsive">
-    <table class="table table-striped table-sm">
-      <thead>
-        <tr>
-          <th>Measure</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Return</td>
-          <td>15%</td>
-        </tr>
-        <tr>
-          <td>Volatility</td>
-          <td>4.38%</td>
-        </tr>
-        <tr>
-          <td>Sharpe Ratio</td>
-          <td>0.87</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</main>
-</div>
-</div>
+          <canvas class="my-4 w-100" id="myChart" width="1000" height="500"></canvas>
+        </main>
 
-<main role="main" class="col-md-9 ml-sm-auto col-lg-11 px-md-4">
-  <footer class="my-5 pt-5 text-muted text-center text-small">
-    <p class="mb-1">&copy; MIE479 2020-2021</p>
-    <ul class="list-inline">
-      <li class="list-inline-item"><a href="#">Privacy</a></li>
-      <li class="list-inline-item"><a href="#">Terms</a></li>
-      <li class="list-inline-item"><a href="#">Support</a></li>
-    </ul>
-  </footer>
-</main>
+        <main role="main" class="col-md-5 ml-sm-auto col-lg-5 px-md-4">
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+            <h1 class="h2">Statistical Measurement</h1>
+          </div>
+          <div class="table-responsive id=stats-table">
+            <!--
+            <table class="table table-striped table-sm">
+              <thead>
+                <tr>
+                  <th>Measure</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Return</td>
+                  <td>15%</td>
+                </tr>
+                <tr>
+                  <td>Volatility</td>
+                  <td>4.38%</td>
+                </tr>
+                <tr>
+                  <td>Sharpe Ratio</td>
+                  <td>0.87</td>
+                </tr>
+              </tbody>
+            </table>
+            -->
+          </div>
+        </main>
+      </div>
+    </div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-      <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-        <script src="dashboard.js"></script></body>
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-11 px-md-4">
+      <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">&copy; MIE479 2020-2021</p>
+        <ul class="list-inline">
+          <li class="list-inline-item"><a href="#">Privacy</a></li>
+          <li class="list-inline-item"><a href="#">Terms</a></li>
+          <li class="list-inline-item"><a href="#">Support</a></li>
+        </ul>
+      </footer>
+    </main>
+
+    <script>
+      var obj, dbParam, xmlhttp, myObj, x, txt = "";
+      obj = { table: "weights", cookie: document.cookie };
+      dbParam = JSON.stringify(obj);
+      xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          myObj = JSON.parse(this.responseText);
+          txt += "<table class='table table-striped table-sm'><thead><tr><th>Asset</th><th>Value</th><th>Weight</th></tr></thead><tbody>"
+          for (x in myObj) {
+            txt += "<tr><td>" + myObj[x].ticker + "</td>";
+            txt += "<td>" + myObj[x].share + "</td>";
+            txt += "<td>" + myObj[x].weight + "</td></tr>";
+          }
+          txt += "</tbody></table>"
+          document.getElementById("weights-table").innerHTML = txt;
+        }
+      }
+      xmlhttp.open("POST", "backend/dashboard-weights-table/", true);
+      xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xmlhttp.send(dbParam);
+    </script>
+
+    <script>
+      var obj, dbParam, xmlhttp, myObj, x, txt = "";
+      obj = { table: "stats", cookie: document.cookie };
+      dbParam = JSON.stringify(obj);
+      xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          myObj = JSON.parse(this.responseText);
+          txt += "<table class='table table-striped table-sm'><thead><tr><th>Measure</th><th>Value</th></tr></thead><tbody>"
+          for (x in myObj) {
+            txt += "<tr><td>" + myObj[x].name + "</td>";
+            txt += "<td>" + myObj[x].value + "</td></tr>";
+          }
+          txt += "</tbody></table>"
+          document.getElementById("stats-table").innerHTML = txt;
+        }
+      }
+      xmlhttp.open("POST", "backend/dashboard-stats-table/", true);
+      xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      xmlhttp.send(dbParam);
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <script src="dashboard.js"></script>
+
+  </body>
 </html>

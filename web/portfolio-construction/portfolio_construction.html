@@ -141,7 +141,7 @@
 
             <hr class="mb-4">
             <h4 class="mb-3">Risk Appetite</h4>
-            <h7 class="mb-3">Understanding investors' attitude to risk, including how they feel about risk, how much risk they can afford will allow the adviser’s recommendations to be tailored to better meet their needs. If you have a clear understanding of your risk profile, please indicate below. Otherwise, please choose the option "Not sure" and complete survey linked below. It is important to note that the final selected risk profile will be an important factor in which products and assets are recommended (if any).</h7>
+            <h7 class="mb-3">Understanding investors' attitude to risk, including how they feel about risk, how much risk they can afford will allow the adviser’s recommendations to be tailored to better meet their needs. If you have a clear understanding of your risk profile, please select from the dropdown list below. Otherwise, please first complete the survey linked below, and then use the returned result as your input. It is important to note that the final selected risk profile will be an important factor in which products and assets are recommended (if any).</h7>
             <h6 class="mb-4"></h6>
 
             <div class="row">
@@ -151,17 +151,17 @@
                   <option value="1">Risk averse</option>
                   <option value="1">Neither risk averse nor risk seeking</option>
                   <option value="1">Risk seeking</option>
-                  <option value="0">Not sure</option>
                 </select>
                 <div class="invalid-feedback">
                   Please select the most appropriate description for your risk profile.
                 </div>
               </div>
               <div class="col-md-4 mb-3">
-                <button type="button" id="survey" class="btn btn-link btn-block" disabled>Risk Attitude Survey</button>
+                <button type="button" id="survey" class="btn btn-link btn-block">Risk Attitude Survey</button>
               </div>
             </div>
             
+            <!--
             <script type="text/javascript">
               document.getElementById("appetite").onchange = function () {
                 if ($("#appetite option:selected").val() != 0)
@@ -172,6 +172,7 @@
                 }
               };
             </script>
+            -->
 
             <script type="text/javascript">
               document.getElementById("survey").onclick = function () {
