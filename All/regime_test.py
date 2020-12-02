@@ -226,7 +226,6 @@ class Regime_test (object):
     return excess_return, factors_return,regimes,price_table
   
   def single_period(lookback,target_return,principal,risk_appetite,card,horizon):
-    date_list = np.arange(0,horizon,lookback)
     excess_return, factors_return, regimes, price_table = Regime_test.get_returns(horizon)
     if card == 0:
       card = Regime_test.cardinality(principal)
@@ -254,7 +253,18 @@ class Regime_test (object):
     start_period = np.floor(horizon/4). astype(int)
     df = pd.DataFrame(act_ret[-start_period:])
     df_change = df.pct_change()
-    act_std = np.std(df_change)*np.sqrt(13)
-    act_annual = df_change.mean()*13
+    temp = df_change.values.tolist()
+    #print(temp)
+    act_std = np.std(temp[1:])*np.sqrt(13)
+    act_annual = np.mean(temp[1:])*13
     act_sr = act_annual/act_std
     return act_annual, act_std, act_sr
+
+  def plot_horizon (act_ret,horizon):
+    start_period = np.floor(horizon/4). astype(int)
+    df = pd.DataFrame(act_ret[-start_period:])
+    rets = df.values.tolist()
+    normalized_ret = []
+    for ret in rets:
+      normalized_ret.append(ret[0]/rets[0][0])
+    return normalized_ret
