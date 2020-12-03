@@ -220,7 +220,10 @@ def dashboard_line_chart():
     portfolios = DB.get_user(email)['portfolios']
     portfolio_names = [pf[0] for pf in portfolios]
 
-    portfolio = portfolios[portfolio_number]
+    try:
+        portfolio = portfolios[portfolio_number]
+    except IndexError:
+        abort(400)
 
     portfolio_name, \
     portfolio_desc, \
