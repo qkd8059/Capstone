@@ -1,15 +1,29 @@
 <!DOCTYPE HTML>
 <html lang="en-US">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="refresh" content="0; url=/sign-in/sign-in.html">
-        <script type="text/javascript">
-            window.location.href = "/sign-in/sign-in.html"
-        </script>
-        <title>Page Redirection</title>
-    </head>
-    <body>
-        <!-- Note: don't tell people to `click` the link, just tell them that it is a link. -->
-        If you are not redirected automatically, follow this <a href='/sign-in/sign-in.html'>link to example</a>.
-    </body>
+
+<head>
+  <meta charset="UTF-8">
+  <script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/backend/check-session-id');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = () => {
+      if (xhr.status == 200 && xhr.responseText == 'logged in')
+        window.location.href = '/dashboard/dashboard.html';
+      else
+        window.location.href = '/sign-in/sign-in.html';
+    };
+    var payload = JSON.stringify({
+      cookie: document.cookie
+    });
+    xhr.send(payload);
+  </script>
+  <title>Page Redirection</title>
+</head>
+
+<body>
+  If you are not redirected automatically, follow this <a href='/sign-in/sign-in.html'>link</a> to sign in or if this
+  <a href='/dashboard/dashboard.html'>link</a> to your dashboard.
+</body>
+
 </html>

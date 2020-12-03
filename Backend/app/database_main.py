@@ -22,7 +22,7 @@ class Database(object):
             collection = db.ETFTickers
             
         data = collection.find()
-        tickers = [];
+        tickers = []
         for item in data:
             tickers.append(item["Symbol"])
         return tickers
@@ -30,29 +30,32 @@ class Database(object):
     def get_date():
         #set the time interval for getting the stock price
         dtFromDate = '2005-09-30'
-        dtToDate = '2020-09-30' #str(dt.datetime.now().date())
+        dtToDate =  str(dt.datetime.now().date())
         dates = [dtFromDate, dtToDate]
         return dates
     
-    
+    def get_one_price(ticker):
+        resp = requests.get("https://api.tiingo.com/tiingo/daily/"+ticker+"/prices?token=6b6dca5492e46a79e40f578eb6ecafe357ddc31b")
+        return resp.json()[0]['close']
+
     def get_price(tickers,dates):
         #get the weekly historical price for each stock
         headers = {
         'Content-Type': 'application/json'
         }
     
-        table =[];
+        table =[]
         for i in range(0,len(tickers)):
             requestResponse = requests.get("https://api.tiingo.com/tiingo/daily/"+tickers[i]+"/prices?startDate="+dates[0]+"&endDate="+dates[1]+"&token=6b6dca5492e46a79e40f578eb6ecafe357ddc31b&resampleFreq=weekly",headers=headers)
             temp_list = requestResponse.json()
-            dict = {};
+            dict = {}
             dict['Symbol'] = tickers[i]
             print(tickers[i])
             for k in range(0,len(temp_list)):
                 longdate = temp_list[k]['date']
                 date = longdate[0:10]
                 dict[date] = temp_list[k]['adjClose']  
-            table.append(dict);
+            table.append(dict)
         return table
     
     def write_csv(table,pricefile):
@@ -93,12 +96,6 @@ class Database(object):
         data_dict = data.to_dict("record")
         collection.insert_many(data_dict)
     
-    def write_time_series (data,lookback,card,risk_appetite):
-        #save 4*4*3 cumulated returns into database
-        collection = 'timeseries_L'+str(lookback)+'_C'+str(card)+'_R'+str(risk_appetite)
-        print(collection)
-        Database.save_into_mongo(data,collection)
-    
     def clean_col_save (data, collection):
         client = pymongo.MongoClient("mongodb+srv://admin:admin@mie479.mvqsq.mongodb.net/MIE479?retryWrites=true&w=majority") 
         db = client.MIE479
@@ -110,7 +107,22 @@ class Database(object):
             collection.delete_many({})
         data.reset_index(inplace=True)
         data_dict = data.to_dict("record")
-        collection.insert_many(data_dict)        
+        collection.insert_many(data_dict)  
+        
+    def write_time_series (data,lookback,card,risk_appetite):
+        #save 4*4*3 cumulated returns into database
+        collection = 'timeseries_L'+str(lookback)+'_C'+str(card)+'_R'+str(risk_appetite)
+        print(collection)
+        Database.clean_col_save(data,collection)
+    
+    def get_timeseries_name (data,lookback,card,risk_appetite):
+        name = 'timeseries_L'+str(lookback)+'_C'+str(card)+'_R'+str(risk_appetite)
+        return name
+    
+    def write_portfolio (data, userid, portfid):
+        collection = 'portfolio_'+userid+'_'+str(portfid)
+        print(collection)
+        Database.clean_col_save(data,collection)
         
         
     
