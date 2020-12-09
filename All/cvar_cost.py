@@ -17,11 +17,11 @@ def cvar_cost(mu,Q, card, price_table, date, old_weight, old_ticker, target_retu
     """
     # Define parameters used for Monte Carlo simulation
     ## the number of simulated asset price paths
-    num_paths = 100
+    num_paths = 1000
     ## get current prices of the current date
     current_prices = price_table[date]
     ## the time length of simulation in the unit of estimation of mu and Q. Here T represents rebalancing every 8 weeks
-    T = 1
+    T = 26/lookback
     ## the number of time steps to take in the simulation
     N = lookback
     ## confident level for the VaR
@@ -65,7 +65,7 @@ def cvar_cost(mu,Q, card, price_table, date, old_weight, old_ticker, target_retu
     # Define cost per transaction
     cost = 0.01
     # Define total cost
-    total_cost = 100
+    total_cost = 0.5 + lookback*0.01   #longer rebalancing period will tolerate more weight shift
     rs = returns_sample.T
     ones = np.ones((num_paths,1))
     mu_mat = ones*mu
