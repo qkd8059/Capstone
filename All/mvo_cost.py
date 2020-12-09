@@ -45,7 +45,7 @@ def mvo_cost(mu, Q, card, old_weight, old_ticker):
     # Define cost per transaction
     cost = 0.01
     # Define total cost
-    total_cost = 100
+    total_cost = 0.5 + lookback*0.01   #longer rebalancing period will tolerate more weight shift
     c = np.identity(len(mu)) * cost
     T = np.array([total_cost])
 
