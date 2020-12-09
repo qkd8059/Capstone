@@ -15,11 +15,11 @@ def cvar(mu, Q, card, price_table, date, target_return, lookback,risk_appetite):
     """
     # Define parameters used for Monte Carlo simulation
     ## the number of simulated asset price paths
-    num_paths = 100
+    num_paths = 1000
     ## get current prices of the current date
     current_prices = price_table[date]
-    ## the time length of simulation in the unit of estimation of mu and Q. Here T represents rebalancing every 8 weeks
-    T = 1
+    ## the time length of simulation in the unit of estimation of mu and Q. 
+    T = 26/lookback #Forward look half year
     ## the number of time steps to take in the simulation
     N = lookback
     ## confident level for the VaR
