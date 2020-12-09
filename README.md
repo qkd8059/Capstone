@@ -1,4 +1,9 @@
 # Capstone
+
+Team member: Edward Guan, Jing Zhang, Jinxuan Zhang, Xiaorong Zhang, Xinyue Zhang
+
+-----------------------
+
 Folder All: include all the python script for business logic
 
 Folder Backend: include all the scripts for running the backend
