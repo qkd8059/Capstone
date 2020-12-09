@@ -3,7 +3,7 @@ Folder All: include all the python script for business logic
 
 Folder Backend: include all the scripts for running the backend
 
-Folder Database: include all the raw data files
+Folder Data: include all the raw data files
 
 Folder Factor: include all the python scripts for factor models
 
