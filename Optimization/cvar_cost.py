@@ -65,7 +65,7 @@ def cvar_cost(mu,Q, card, price_table, date, old_weight, old_ticker, target_retu
     # Define cost per transaction
     cost = 0.01
     # Define total cost
-    total_cost = 100
+    total_cost = 0.5
     rs = returns_sample.T
     ones = np.ones((num_paths,1))
     mu_mat = ones*mu
