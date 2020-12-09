@@ -86,6 +86,7 @@ class Database(object):
         return df
     
     def save_into_mongo (data, collection):
+        #insert new data into a collection
         client = pymongo.MongoClient("mongodb+srv://admin:admin@mie479.mvqsq.mongodb.net/MIE479?retryWrites=true&w=majority") 
         db = client.MIE479
         collection = db[collection]
@@ -94,6 +95,7 @@ class Database(object):
         collection.insert_many(data_dict)
     
     def clean_col_save (data, collection):
+        #empty a collection first, then insert new data into it
         client = pymongo.MongoClient("mongodb+srv://admin:admin@mie479.mvqsq.mongodb.net/MIE479?retryWrites=true&w=majority") 
         db = client.MIE479
         collection = db[collection]  
@@ -105,22 +107,31 @@ class Database(object):
         data.reset_index(inplace=True)
         data_dict = data.to_dict("record")
         collection.insert_many(data_dict)  
+    
+    def delete_entries(collection,index_start,index_end):
+        #delete entries from a collection
+        df = Database.read_data(collection)
+        for i in range(index_start,index_end+1):
+            df = df.drop(df.index[[index_start]])
+        Database.clean_col_save(df,collection) 
         
     def write_time_series (data,lookback,card,risk_appetite):
-        #save 4*4*3 cumulated returns into database
+        #for BACKTESTING: save 4*4*3 cumulated returns into database
         collection = 'timeseries_L'+str(lookback)+'_C'+str(card)+'_R'+str(risk_appetite)
         print(collection)
         Database.clean_col_save(data,collection)
     
     def get_timeseries_name (data,lookback,card,risk_appetite):
+        #for BACKTESTING
         name = 'timeseries_L'+str(lookback)+'_C'+str(card)+'_R'+str(risk_appetite)
         return name
     
     def write_portfolio (data, userid, portfid):
+        #for BACKTESTING
         collection = 'portfolio_'+userid+'_'+str(portfid)
         print(collection)
         Database.clean_col_save(data,collection)
-        
+   
         
     
 ##main function#################################################################
